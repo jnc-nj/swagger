@@ -2,15 +2,8 @@
 
 ;;; https://swagger.io/specification/
 
-(defclass _has-content ()
-  ((content :field-type :map
-	    :key-field string
-	    :value-field media-type-object
-	    :initarg :content))
-  (:metaclass sanity-clause:validated-metaclass))
-
 (defclass _has-required ()
-  ((required :type boolean :initarg :required))
+  ((required :field-type :boolean :initarg :required))
   (:metaclass sanity-clause:validated-metaclass))
 
 (defclass _has-operation-id ()
@@ -20,71 +13,31 @@
   (:metaclass sanity-clause:validated-metaclass))
 
 (defclass _has-callbacks ()
-  ((callbacks :initarg :callbacks))
-  (:metaclass sanity-clause:validated-metaclass))
-
-(defclass _has-links ()
-  ((links :field-type :map
-	  :key-field string
-	  :value-field (or link-object t)
-	  :initarg :links))
-  (:metaclass sanity-clause:validated-metaclass))
+  ((callbacks :initarg :callbacks)))
 
 (defclass _has-allow-reserved ()
   ((allow-reserved :data-key "allowReserved"
-		   :type boolean
+		   :field-type :boolean
 		   :initarg :allow-reserved))
   (:metaclass sanity-clause:validated-metaclass))
 
 (defclass _has-explode ()
-  ((explode :type boolean :initarg :explode))
+  ((explode :field-type :boolean :initarg :explode))
   (:metaclass sanity-clause:validated-metaclass))
 
 (defclass _has-style ()
   ((style :type string :initarg :style))
   (:metaclass sanity-clause:validated-metaclass))
 
-(defclass _has-examples ()
-  ((examples :field-type :map
-	     :key-field string
-	     :value-field (or example-object t)
-	     :initarg :examples))
+(defclass _has-$ref ()
+  (($ref :type string :initarg :$ref)) 
   (:metaclass sanity-clause:validated-metaclass))
 
 (defclass _has-example ()
-  ((example :initarg :example))
-  (:metaclass sanity-clause:validated-metaclass))
-
-(defclass _has-headers ()
-  ((headers :field-type :map
-	    :key-field string
-	    :value-field (or header-object t)
-	    :initarg :headers))
-  (:metaclass sanity-clause:validated-metaclass))
-
-(defclass _has-external-docs ()
-  ((external-docs :data-key "externalDocs"
-		  :type external-documentation-object
-		  :field-type :nested
-		  :element-type external-documentation-object
-		  :initarg :external-docs))
-  (:metaclass sanity-clause:validated-metaclass))
-
-(defclass _has-parameters ()
-  ((parameters :field-type :list
-	       :element-type (or parameter-object t)
-	       :initarg :parameters))
-  (:metaclass sanity-clause:validated-metaclass))
+  ((example :initarg :example)))
 
 (defclass _has-schema ()
-  ((schema :type t :initarg :schema))
-  (:metaclass sanity-clause:validated-metaclass))
-
-(defclass _has-servers ()
-  ((servers :field-type :list
-	    :element-type server-object
-	    :initarg :servers))
-  (:metaclass sanity-clause:validated-metaclass))
+  ((schema :initarg :schema)))
 
 (defclass _has-url ()
   ((url :type string :initarg :url))
@@ -104,6 +57,10 @@
 
 (defclass _has-name ()
   ((name :type string :initarg :name))
+  (:metaclass sanity-clause:validated-metaclass))
+
+(defclass security-requirement-object ()
+  ()
   (:metaclass sanity-clause:validated-metaclass))
 
 (defclass oauth-flow-object ()
@@ -126,13 +83,23 @@
   (:metaclass sanity-clause:validated-metaclass))
 
 (defclass oauth-flows-object ()
-  ((implicit :type oauth-flow-object :initarg :implicit)
-   (password :type oauth-flow-object :initarg :password)
+  ((implicit :type oauth-flow-object
+	     :field-type :nested
+	     :element-type oauth-flow-object
+	     :initarg :implicit)
+   (password :type oauth-flow-object
+	     :field-type :nested
+	     :element-type oauth-flow-object
+	     :initarg :password)
    (client-credentials :data-key "clientCredentials"
 		       :type oauth-flow-object
+		       :field-type :nested
+		       :element-type oauth-flow-object
 		       :initarg :client-credentials)
    (authorization-code :data-key "authorizationCode"
 		       :type oauth-flow-object
+		       :field-type :nested
+		       :element-type oauth-flow-object
 		       :initarg :authorization-code))
   (:metaclass sanity-clause:validated-metaclass))
 
@@ -142,7 +109,11 @@
    (bearer-format :data-key "bearerFormat"
 		  :type string
 		  :initarg :bearer-format)
-   (flows :type oauth-flows-object :initarg :flows :required t)
+   (flows :type oauth-flows-object
+	  :field-type :nested
+	  :element-type oauth-flow-object
+	  :initarg :flows
+	  :required t)
    (open-id-connect-url :data-key "openIdConnectUrl"
 			:type string
 			:initarg :open-id-connect-url
@@ -152,8 +123,8 @@
 (defclass xml-object (_has-name)
   ((namespace :type string :initarg :namespace)
    (prefix :type string :initarg :prefix)
-   (attribute :type boolean :initarg :attribute)
-   (wrapped :type boolean :initarg :wrapped))
+   (attribute :field-type :boolean :initarg :attribute)
+   (wrapped :field-type :boolean :initarg :wrapped))
   (:metaclass sanity-clause:validated-metaclass))
 
 (defclass descriminator-object ()
@@ -168,6 +139,7 @@
   (:metaclass sanity-clause:validated-metaclass))
 
 (defclass tag-object (_has-name _has-description _has-external-docs)
+  ()
   (:metaclass sanity-clause:validated-metaclass))
 
 (defclass link-object (_has-operation-id _has-parameters _has-description)
@@ -175,18 +147,44 @@
 		  :type string
 		  :initarg :operation-ref)
    (request-body :data-key "requestBody"
+		 :type string
 		 :initarg :request-body)
-   (server :type server-object :initarg :server))
+   (server :type server-object
+	   :field-type :nested
+	   :element-type server-object
+	   :initarg :server))
+  (:metaclass sanity-clause:validated-metaclass))
+
+(defclass _has-links ()
+  ((links :field-type :map
+	  :key-field string
+	  :value-field (or link-object _has-$ref)
+	  :initarg :links))
   (:metaclass sanity-clause:validated-metaclass))
 
 (defclass example-object (_has-summary _has-description)
-  ((value :initarg :value)
+  ((value :type string :initarg :value)
    (external-value :data-key "externalValue"
 		   :type string
 		   :initarg :external-value))
   (:metaclass sanity-clause:validated-metaclass))
 
+(defclass _has-examples ()
+  ((examples :field-type :map
+	     :key-field string
+	     :value-field (or example-object _has-$ref)
+	     :initarg :examples))
+  (:metaclass sanity-clause:validated-metaclass))
+
 (defclass response-object (_has-description _has-headers _has-content _has-links)
+  ()
+  (:metaclass sanity-clause:validated-metaclass))
+
+(defclass responses-object ()
+  ((default :type (or response-object _has-$ref)
+     :field-type :nested
+     :element-type (or response-object _has-$ref)
+     :initarg :default))
   (:metaclass sanity-clause:validated-metaclass))
 
 (defclass encoding-object (_has-headers _has-style _has-explode _has-allow-reserved)
@@ -202,39 +200,77 @@
 	     :initarg :encoding))
   (:metaclass sanity-clause:validated-metaclass))
 
+(defclass _has-content ()
+  ((content :field-type :map
+	    :key-field string
+	    :value-field media-type-object
+	    :initarg :content))
+  (:metaclass sanity-clause:validated-metaclass))
+
 (defclass request-body-object (_has-description _has-content _has-required) 
+  ()
   (:metaclass sanity-clause:validated-metaclass))
 
 (defclass parameter-object (_has-name _has-description _has-in _has-schema _has-example
 				      _has-examples _has-required _has-content
 				      _has-style _has-explod _has-allow-reserved)
-  ((deprecated :type boolean :initarg :deprecated)
+  ((deprecated :field-type :boolean :initarg :deprecated)
    (allow-empty-value :data-key "allowEmptyValue"
-		      :type boolean
+		      :field-type :boolean
 		      :initarg :allow-empty-value))
   (:metaclass sanity-clause:validated-metaclass))
 
+(defclass _has-headers ()
+  ((headers :field-type :map
+	    :key-field string
+	    :value-field (or parameter-object _has-$ref)
+	    :initarg :headers))
+  (:metaclass sanity-clause:validated-metaclass))
+
+(defclass _has-parameters ()
+  ((parameters :field-type :list
+	       :element-type (or parameter-object _has-$ref)
+	       :initarg :parameters))
+  (:metaclass sanity-clause:validated-metaclass))
+
 (defclass external-documentation-object (_has-description _has-url) 
+  ()
+  (:metaclass sanity-clause:validated-metaclass))
+
+(defclass _has-external-docs ()
+  ((external-docs :data-key "externalDocs"
+		  :type external-documentation-object
+		  :field-type :nested
+		  :element-type external-documentation-object
+		  :initarg :external-docs))
   (:metaclass sanity-clause:validated-metaclass))
 
 (defclass operation-object (_has-description _has-operation-id _has-summary _has-servers
 					     _has-external-docs _has-parameters _has-callbacks)
   ((tags :field-type :list
 	 :element-type string
-	 :initarg :tags)      
+	 :initarg :tags)
    (request-body :data-key "requestBody"
-		 :type (or request-body-object t)
+		 :type (or request-body-object _has-$ref)
 		 :field-type :nested
-		 :element-type (or request-body-object t) 
+		 :element-type (or request-body-object _has-$ref) 
 		 :initarg :request-body)
-   (responses :initarg :responses) 
-   (deprecated :type boolean :initarg :deprecated)
-   (security :initarg :security))
+   (responses :type responses-object
+	      :field-type :nested
+	      :element-type responses-object
+	      :initarg :responses
+	      :required t) 
+   (deprecated :field-type :boolean :initarg :deprecated)
+   (security :field-type :list
+	     :element-type security-requirement-object
+	     :initarg :security)
+   (servers :field-type :list
+	    :element-type server-object
+	    :initarg :servers))
   (:metaclass sanity-clause:validated-metaclass))
 
-(defclass path-item-object (_has-description _has-summary _has-servers _has-parameters)
-  (($ref :type string :initarg :$ref)   
-   (get :type operation-object
+(defclass path-item-object (_has-description _has-summary _has-servers _has-parameters _has-$ref)
+  ((get :type operation-object
 	:field-type :nested
 	:element-type operation-object
 	:initarg :get)
@@ -268,6 +304,10 @@
 	  :initarg :trace))
   (:metaclass sanity-clause:validated-metaclass))
 
+(defclass paths-object ()
+  ()
+  (:metaclass sanity-clause:validated-metaclass))
+
 (defclass components-object (_has-examples _has-headers _has-links _has-callbacks)
   ((schemas :field-type :map
 	    :key-field string
@@ -275,21 +315,21 @@
 	    :initarg :schemas)
    (responses :field-type :map
 	      :key-field string
-	      :value-field (or response-object t)
+	      :value-field (or response-object _has-$ref)
 	      :initarg :responses)
    (parameters :field-type :map
 	       :key-field string
-	       :value-field (or parameter-object t)
+	       :value-field (or parameter-object _has-$ref)
 	       :initarg :parameters) 
    (request-bodies :data-key "requestBodies"
 		   :field-type :map
 		   :key-field string
-		   :value-field (or request-bodies-object t)
+		   :value-field (or request-bodies-object _has-$ref)
 		   :initarg :request-bodies) 
    (security-schemes :data-key "securitySchemes"
 		     :field-type :map
 		     :key-field string
-		     :value-field (or security-scheme-object t)
+		     :value-field (or security-scheme-object _has-$ref)
 		     :initarg :security-schemes))
   (:metaclass sanity-clause:validated-metaclass))
 
@@ -307,7 +347,14 @@
 	      :initarg :map-field))
   (:metaclass sanity-clause:validated-metaclass))
 
+(defclass _has-servers ()
+  ((servers :field-type :list
+	    :element-type server-object
+	    :initarg :servers))
+  (:metaclass sanity-clause:validated-metaclass))
+
 (defclass license-object (_has-name _has-url) 
+  ()
   (:metaclass sanity-clause:validated-metaclass))
 
 (defclass contact-object (_has-name _has-url)
@@ -330,13 +377,54 @@
 	    :initarg :license))
   (:metaclass sanity-clause:validated-metaclass))
 
-(defclass openapi-object (_has-servers)
+(defclass openapi-object (_has-servers _has-external-docs)
   ((openapi :type string :initarg :openapi :required t)
    (info :type info-object
 	 :field-type :nested
 	 :element-type info-object
 	 :initarg :info
 	 :required t) 
-   (paths :initarg :paths
-	  :required t))
+   (paths :type paths-object
+	  :field-type :nested
+	  :element-type paths-object
+	  :initarg :paths
+	  :required t)
+   (components :type components-object
+	       :field-type :nested
+	       :element-type components-object
+	       :initarg :components)
+   (security :field-type :list
+	     :element-type security-requirement-object
+	     :initarg :security)
+   (tags :field-type :list
+	 :element-type tag-object
+	 :initarg :tags))
+  (:metaclass sanity-clause:validated-metaclass))
+
+(defclass property-object (_has-url)
+  ((type :type string :initarg :type)
+   (value :type string :initarg :value))
+  (:metaclass sanity-clause:validated-metaclass))
+
+(defclass meta-object (_has-name _has-description) 
+  ((properties :field-type :list
+	       :element-type :property-object
+	       :initarg :properties)
+   (tags :field-type :list
+	 :element-type string
+	 :initarg :tags))
+  (:metaclass sanity-clause:validated-metaclass))
+
+(defclass swagger-object ()
+  ((swagger-json :data-key "swagger_json"
+		 :type openapi-object
+		 :field-type :nested
+		 :element-type openapi-object
+		 :initarg :swagger-json
+		 :required t)
+   (meta :type meta-object
+	 :field-type :nested
+	 :element-type meta-object
+	 :initarg :meta
+	 :required t))
   (:metaclass sanity-clause:validated-metaclass))

@@ -6,6 +6,9 @@
   :version "0.0.1"
   :serial t
   :components ((:file "src/packages")
-	       (:file "src/classes"))
+	       (:file "src/classes")
+	       (:file "src/process"))
   :depends-on (:jack-tools
-	       :sanity-clause))
+	       :sanity-clause
+	       :jonathan
+	       :alexandria))
