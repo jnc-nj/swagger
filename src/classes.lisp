@@ -3,428 +3,228 @@
 ;;; https://swagger.io/specification/
 
 (defclass _has-required ()
-  ((required :field-type :boolean :initarg :required))
-  (:metaclass sanity-clause:validated-metaclass))
+  ((required :initarg :required :initform nil)))
 
 (defclass _has-operation-id ()
-  ((operation-id :data-key "operationId"
-		 :type string
-		 :initarg :operation-id))
-  (:metaclass sanity-clause:validated-metaclass))
+  ((operation-id :initarg :operation-id :initform "")))
 
 (defclass _has-callbacks ()
-  ((callbacks :initarg :callbacks)))
+  ((callbacks :initarg :callbacks :initform '())))
 
 (defclass _has-allow-reserved ()
-  ((allow-reserved :data-key "allowReserved"
-		   :field-type :boolean
-		   :initarg :allow-reserved))
-  (:metaclass sanity-clause:validated-metaclass))
+  ((allow-reserved :initarg :allow-reserved :initform nil)))
 
 (defclass _has-explode ()
-  ((explode :field-type :boolean :initarg :explode))
-  (:metaclass sanity-clause:validated-metaclass))
+  ((explode :initarg :explode :initform nil)))
 
 (defclass _has-style ()
-  ((style :type string :initarg :style))
-  (:metaclass sanity-clause:validated-metaclass))
+  ((style :initarg :style :initform "")))
 
 (defclass _has-$ref ()
-  (($ref :type string :initarg :$ref)) 
-  (:metaclass sanity-clause:validated-metaclass))
+  (($ref :initarg :$ref :initform "")))
 
 (defclass _has-example ()
-  ((example :initarg :example)))
+  ((example :initarg :example :initform "")))
 
 (defclass _has-schema ()
-  ((schema :initarg :schema)))
+  ((schema :initarg :schema :initform nil)))
 
 (defclass _has-url ()
-  ((url :type string :initarg :url))
-  (:metaclass sanity-clause:validated-metaclass))
+  ((url :initarg :url :initform "")))
 
 (defclass _has-summary ()
-  ((summary :type string :initarg :summary))
-  (:metaclass sanity-clause:validated-metaclass))
+  ((summary :initarg :summary :initform "")))
 
 (defclass _has-in ()
-  ((in :type string :initarg :in :required t))
-  (:metaclass sanity-clause:validated-metaclass))
+  ((in :initarg :in :initform "")))
 
 (defclass _has-description ()
-  ((description :type string :initarg :description))
-  (:metaclass sanity-clause:validated-metaclass))
+  ((description :initarg :description :initform "")))
 
 (defclass _has-name ()
-  ((name :type string :initarg :name))
-  (:metaclass sanity-clause:validated-metaclass))
+  ((name :initarg :name :initform "")))
 
-(defclass security-requirement-object ()
-  ()
-  (:metaclass sanity-clause:validated-metaclass))
+(defclass _has-type ()
+  ((type :initarg :type :initform "")))
 
 (defclass oauth-flow-object ()
-  ((authorization-url :data-key "authorizationUrl"
-		      :type string
-		      :initarg :authorization-url
-		      :required t)
-   (token-url :data-key "tokenUrl"
-	      :type string
-	      :initarg :token-url
-	      :required t)
-   (refresh-url :data-key "refreshUrl"
-		:type string
-		:initarg :refresh-url)
-   (scopes :field-type :map
-	   :key-field string
-	   :value-field string
-	   :initarg :scopes
-	   :required t))
-  (:metaclass sanity-clause:validated-metaclass))
+  ((authorization-url :initarg :authorization-url :initform "")
+   (token-url :initarg :token-url :initform "")
+   (refresh-url :initarg :refresh-url :initform "")
+   (scopes :initarg :scopes :initform (list (cons "" "")))))
 
 (defclass oauth-flows-object ()
-  ((implicit :type oauth-flow-object
-	     :field-type :nested
-	     :element-type oauth-flow-object
-	     :initarg :implicit)
-   (password :type oauth-flow-object
-	     :field-type :nested
-	     :element-type oauth-flow-object
-	     :initarg :password)
-   (client-credentials :data-key "clientCredentials"
-		       :type oauth-flow-object
-		       :field-type :nested
-		       :element-type oauth-flow-object
-		       :initarg :client-credentials)
-   (authorization-code :data-key "authorizationCode"
-		       :type oauth-flow-object
-		       :field-type :nested
-		       :element-type oauth-flow-object
-		       :initarg :authorization-code))
-  (:metaclass sanity-clause:validated-metaclass))
+  ((implicit :initarg :implicit :initform (make-instance 'oauth-flow-object))
+   (password :initarg :password :initform (make-instance 'oauth-flow-object))
+   (client-credentials :initarg :client-credentials :initform (make-instance 'oauth-flow-object))
+   (authorization-code :initarg :authorization-code :initform (make-instance 'oauth-flow-object))))
 
-(defclass security-scheme-object (_has-description _has-name _has-in)
-  ((type :type string :initarg :type :required t)
-   (scheme :type string :initarg :scheme :required t)
-   (bearer-format :data-key "bearerFormat"
-		  :type string
-		  :initarg :bearer-format)
-   (flows :type oauth-flows-object
-	  :field-type :nested
-	  :element-type oauth-flow-object
-	  :initarg :flows
-	  :required t)
-   (open-id-connect-url :data-key "openIdConnectUrl"
-			:type string
-			:initarg :open-id-connect-url
-			:required t))
-  (:metaclass sanity-clause:validated-metaclass))
+(defclass security-scheme-object (_has-description _has-name _has-in _has-type)
+  ((scheme :initarg :scheme :initform "")
+   (bearer-format :initarg :bearer-format :initform "")
+   (flows :initarg :flows :initform (make-instance 'oauth-flows-object))
+   (open-id-connect-url :initarg :open-id-connect-url :initform "")))
 
 (defclass xml-object (_has-name)
-  ((namespace :type string :initarg :namespace)
-   (prefix :type string :initarg :prefix)
-   (attribute :field-type :boolean :initarg :attribute)
-   (wrapped :field-type :boolean :initarg :wrapped))
-  (:metaclass sanity-clause:validated-metaclass))
+  ((namespace :initarg :namespace :initform "")
+   (prefix :initarg :prefix :initform "")
+   (attribute :initarg :attribute :initform nil)
+   (wrapped :initarg :wrapped :initform nil)))
 
-(defclass descriminator-object ()
-  ((property-name :data-key "propertyName"
-		  :type string
-		  :initarg :property-name
-		  :required t)
-   (mapping :field-type :map
-	    :key-field string
-	    :value-field string
-	    :initarg :mapping))
-  (:metaclass sanity-clause:validated-metaclass))
+(defclass discriminator-object ()
+  ((property-name :initarg :property-name :initform "")
+   (mapping :initarg :mapping :initform (list (cons "" "")))))
 
 (defclass tag-object (_has-name _has-description _has-external-docs)
-  ()
-  (:metaclass sanity-clause:validated-metaclass))
+  nil)
 
 (defclass link-object (_has-operation-id _has-parameters _has-description)
-  ((operation-ref :data-key "operationRef"
-		  :type string
-		  :initarg :operation-ref)
-   (request-body :data-key "requestBody"
-		 :type string
-		 :initarg :request-body)
-   (server :type server-object
-	   :field-type :nested
-	   :element-type server-object
-	   :initarg :server))
-  (:metaclass sanity-clause:validated-metaclass))
+  ((operation-ref :initarg :operation-ref :initform "")
+   (request-body :initarg :request-body :initform "")
+   (server :initarg :server :initform (make-instance 'server-object))))
 
 (defclass _has-links ()
-  ((links :field-type :map
-	  :key-field string
-	  :value-field (or link-object _has-$ref)
-	  :initarg :links))
-  (:metaclass sanity-clause:validated-metaclass))
+  ((links :initarg :links :initform (list (cons "" (make-instance 'link-object))))))
 
 (defclass example-object (_has-summary _has-description)
-  ((value :type string :initarg :value)
-   (external-value :data-key "externalValue"
-		   :type string
-		   :initarg :external-value))
-  (:metaclass sanity-clause:validated-metaclass))
+  ((value :initarg :value :initform "")
+   (external-value :initarg :external-value :initform "")))
 
 (defclass _has-examples ()
-  ((examples :field-type :map
-	     :key-field string
-	     :value-field (or example-object _has-$ref)
-	     :initarg :examples))
-  (:metaclass sanity-clause:validated-metaclass))
+  ((examples :initarg :examples :initform (list (cons "" (make-instance 'example-object))))))
 
 (defclass response-object (_has-description _has-headers _has-content _has-links)
-  ()
-  (:metaclass sanity-clause:validated-metaclass))
+  nil)
 
 (defclass responses-object ()
-  ((default :type (or response-object _has-$ref)
-     :field-type :nested
-     :element-type (or response-object _has-$ref)
-     :initarg :default))
-  (:metaclass sanity-clause:validated-metaclass))
+  ((default :initarg :default :initform (make-instance 'response-object))))
 
 (defclass encoding-object (_has-headers _has-style _has-explode _has-allow-reserved)
-  ((content-type :data-key "contentType"
-		 :type string
-		 :initarg :content-type))
-  (:metaclass sanity-clause:validated-metaclass))
+  ((content-type :initarg :content-type :initform "")))
 
 (defclass media-type-object (_has-schema _has-example _has-examples)
-  ((encoding :field-type :map
-	     :key-field string
-	     :value-field encoding-object
-	     :initarg :encoding))
-  (:metaclass sanity-clause:validated-metaclass))
+  ((encoding :initarg :encoding :initform (list (cons "" (make-instance 'encoding-object))))))
 
 (defclass _has-content ()
-  ((content :field-type :map
-	    :key-field string
-	    :value-field media-type-object
-	    :initarg :content))
-  (:metaclass sanity-clause:validated-metaclass))
+  ((content :initarg :content :initform (list (cons "" (make-instance 'media-type-object))))))
 
 (defclass request-body-object (_has-description _has-content _has-required) 
-  ()
-  (:metaclass sanity-clause:validated-metaclass))
+  nil)
 
-(defclass parameter-object (_has-name _has-description _has-in _has-schema _has-example
-				      _has-examples _has-required _has-content
-				      _has-style _has-explod _has-allow-reserved)
-  ((deprecated :field-type :boolean :initarg :deprecated)
-   (allow-empty-value :data-key "allowEmptyValue"
-		      :field-type :boolean
-		      :initarg :allow-empty-value))
-  (:metaclass sanity-clause:validated-metaclass))
+(defclass header-object (_has-description _has-schema _has-example _has-examples
+					  _has-required _has-content _has-style
+					  _has-explode _has-allow-reserved)
+  ((deprecated :initarg :deprecated :initform nil)
+   (allow-empty-value :initarg :allow-empty-value :initform nil)))
+
+(defclass parameter-object (_has-name _has-in header-object)
+  nil)
 
 (defclass _has-headers ()
-  ((headers :field-type :map
-	    :key-field string
-	    :value-field (or parameter-object _has-$ref)
-	    :initarg :headers))
-  (:metaclass sanity-clause:validated-metaclass))
+  ((headers :initarg :headers :initform '(()))))
 
 (defclass _has-parameters ()
-  ((parameters :field-type :list
-	       :element-type (or parameter-object _has-$ref)
-	       :initarg :parameters))
-  (:metaclass sanity-clause:validated-metaclass))
+  ((parameters :initarg :parameters :initform (list (make-instance 'parameter-object)))))
 
 (defclass external-documentation-object (_has-description _has-url) 
-  ()
-  (:metaclass sanity-clause:validated-metaclass))
+  nil)
 
 (defclass _has-external-docs ()
-  ((external-docs :data-key "externalDocs"
-		  :type external-documentation-object
-		  :field-type :nested
-		  :element-type external-documentation-object
-		  :initarg :external-docs))
-  (:metaclass sanity-clause:validated-metaclass))
+  ((external-docs :initarg :external-docs :initform (make-instance 'external-documentation-object))))
 
 (defclass operation-object (_has-description _has-operation-id _has-summary _has-servers
 					     _has-external-docs _has-parameters _has-callbacks)
-  ((tags :field-type :list
-	 :element-type string
-	 :initarg :tags)
-   (request-body :data-key "requestBody"
-		 :type (or request-body-object _has-$ref)
-		 :field-type :nested
-		 :element-type (or request-body-object _has-$ref) 
-		 :initarg :request-body)
-   (responses :type responses-object
-	      :field-type :nested
-	      :element-type responses-object
-	      :initarg :responses
-	      :required t) 
-   (deprecated :field-type :boolean :initarg :deprecated)
-   (security :field-type :list
-	     :element-type security-requirement-object
-	     :initarg :security)
-   (servers :field-type :list
-	    :element-type server-object
-	    :initarg :servers))
-  (:metaclass sanity-clause:validated-metaclass))
+  ((tags :initarg :tags :initform (list ""))
+   (request-body :initarg :request-body :initform (make-instance 'request-body-object))
+   (responses :initarg :responses :initform (make-instance 'responses-object)) 
+   (deprecated :initarg :deprecated :initform nil)
+   (security :initarg :security :initform '(()))))
 
 (defclass path-item-object (_has-description _has-summary _has-servers _has-parameters _has-$ref)
-  ((get :type operation-object
-	:field-type :nested
-	:element-type operation-object
-	:initarg :get)
-   (put :type operation-object
-	:field-type :nested
-	:element-type operation-object
-	:initarg :put)
-   (post :type operation-object
-	 :field-type :nested
-	 :element-type operation-object
-	 :initarg :post)
-   (delete :type operation-object
-	   :field-type :nested
-	   :element-type operation-object
-	   :initarg :delete)
-   (options :type operation-object
-	    :field-type :nested
-	    :element-type operation-object
-	    :initarg :options)
-   (head :type operation-object
-	 :field-type :nested
-	 :element-type operation-object
-	 :initarg :head)
-   (patch :type operation-object
-	  :field-type :nested
-	  :element-type operation-object
-	  :initarg :patch)
-   (trace :type operation-object
-	  :field-type :nested
-	  :element-type operation-object
-	  :initarg :trace))
-  (:metaclass sanity-clause:validated-metaclass))
-
-(defclass paths-object ()
-  ()
-  (:metaclass sanity-clause:validated-metaclass))
+  ((get :initarg :get :initform (make-instance 'operation-object))
+   (put :initarg :put :initform (make-instance 'operation-object))
+   (post :initarg :post :initform (make-instance 'operation-object))
+   (delete :initarg :delete :initform (make-instance 'operation-object))
+   (options :initarg :options :initform (make-instance 'operation-object))
+   (head :initarg :head :initform (make-instance 'operation-object))
+   (patch :initarg :patch :initform (make-instance 'operation-object))
+   (trace :initarg :trace :initform (make-instance 'operation-object))))
 
 (defclass components-object (_has-examples _has-headers _has-links _has-callbacks)
-  ((schemas :field-type :map
-	    :key-field string
-	    :value-field t
-	    :initarg :schemas)
-   (responses :field-type :map
-	      :key-field string
-	      :value-field (or response-object _has-$ref)
-	      :initarg :responses)
-   (parameters :field-type :map
-	       :key-field string
-	       :value-field (or parameter-object _has-$ref)
-	       :initarg :parameters) 
-   (request-bodies :data-key "requestBodies"
-		   :field-type :map
-		   :key-field string
-		   :value-field (or request-bodies-object _has-$ref)
-		   :initarg :request-bodies) 
-   (security-schemes :data-key "securitySchemes"
-		     :field-type :map
-		     :key-field string
-		     :value-field (or security-scheme-object _has-$ref)
-		     :initarg :security-schemes))
-  (:metaclass sanity-clause:validated-metaclass))
+  ((schemas :initarg :schemas :initform "")
+   (responses :initarg :responses :initform (list (cons "" (make-instance 'response-object))))
+   (parameters :initarg :parameters :initform (list (cons "" (make-instance 'parameter-object)))) 
+   (request-bodies :initarg :request-bodies :initform (list (cons "" (make-instance 'request-body-object)))) 
+   (security-schemes :initarg :security-schemes :initform (list (cons "" (make-instance 'security-scheme-object))))))
 
 (defclass server-variable-object (_has-description)
-  ((enum :field-type :list
-	 :element-type string
-	 :initarg :enum)
-   (default :type string :initarg :default :required t))
-  (:metaclass sanity-clause:validated-metaclass))
+  ((enum :initarg :enum :initform (list ""))
+   (initform :initarg :initform :initform "")))
 
 (defclass server-object (_has-description _has-url)
-  ((variables :field-type :map
-	      :key-field string
-	      :value-field server-variable-object
-	      :initarg :map-field))
-  (:metaclass sanity-clause:validated-metaclass))
+  ((variables :initarg :map-field :initform (list (cons "" (make-instance 'server-variable-object))))))
 
 (defclass _has-servers ()
-  ((servers :field-type :list
-	    :element-type server-object
-	    :initarg :servers))
-  (:metaclass sanity-clause:validated-metaclass))
+  ((servers :initarg :servers :initform (list (make-instance 'server-object)))))
 
 (defclass license-object (_has-name _has-url) 
-  ()
-  (:metaclass sanity-clause:validated-metaclass))
+  nil)
 
 (defclass contact-object (_has-name _has-url)
-  ((email :type string :initarg :email))
-  (:metaclass sanity-clause:validated-metaclass))
+  ((email :initarg :email :initform "")))
 
 (defclass info-object (_has-description)
-  ((title :type string :initarg :title :required t) 
-   (terms-of-service :data-key "termsOfService"
-		     :type string
-		     :initarg :terms-of-service)
-   (version :type string :initarg :version :required t)
-   (contact :type contact-object
-	    :field-type :nested
-            :element-type contact-object
-	    :initarg :contact)
-   (license :type license-object
-	    :field-type :nested
-            :element-type license-object
-	    :initarg :license))
-  (:metaclass sanity-clause:validated-metaclass))
+  ((title :initarg :title :initform "") 
+   (terms-of-service :initarg :terms-of-service :initform "")
+   (version :initarg :version :initform "")
+   (contact :initarg :contact :initform (make-instance 'contact-object))
+   (license :initarg :license :initform (make-instance 'license-object))))
 
 (defclass openapi-object (_has-servers _has-external-docs)
-  ((openapi :type string :initarg :openapi :required t)
-   (info :type info-object
-	 :field-type :nested
-	 :element-type info-object
-	 :initarg :info
-	 :required t) 
-   (paths :type paths-object
-	  :field-type :nested
-	  :element-type paths-object
-	  :initarg :paths
-	  :required t)
-   (components :type components-object
-	       :field-type :nested
-	       :element-type components-object
-	       :initarg :components)
-   (security :field-type :list
-	     :element-type security-requirement-object
-	     :initarg :security)
-   (tags :field-type :list
-	 :element-type tag-object
-	 :initarg :tags))
-  (:metaclass sanity-clause:validated-metaclass))
+  ((openapi :initarg :openapi :initform "")
+   (info :initarg :info :initform (make-instance 'info-object))
+   (paths :initarg :paths :initform '(()))
+   (components :initarg :components :initform (make-instance 'components-object))
+   (security :initarg :security :initform '(()))
+   (tags :initarg :tags :initform (list (make-instance 'tag-object)))))
 
-(defclass property-object (_has-url)
-  ((type :type string :initarg :type)
-   (value :type string :initarg :value))
-  (:metaclass sanity-clause:validated-metaclass))
+(defclass property-object (_has-url _has-type)
+  ((value :initarg :value :initform "")))
 
 (defclass meta-object (_has-name _has-description) 
-  ((properties :field-type :list
-	       :element-type :property-object
-	       :initarg :properties)
-   (tags :field-type :list
-	 :element-type string
-	 :initarg :tags))
-  (:metaclass sanity-clause:validated-metaclass))
+  ((properties :initarg :properties :initform (list (make-instance 'property-object)))
+   (tags :initarg :tags :initform (list ""))))
 
 (defclass swagger-object ()
-  ((swagger-json :data-key "swagger_json"
-		 :type openapi-object
-		 :field-type :nested
-		 :element-type openapi-object
-		 :initarg :swagger-json
-		 :required t)
-   (meta :type meta-object
-	 :field-type :nested
-	 :element-type meta-object
-	 :initarg :meta
-	 :required t))
-  (:metaclass sanity-clause:validated-metaclass))
+  ((swagger-json :initarg :swagger-json :initform (make-instance 'openapi-object))
+   (meta :initarg :meta :initform (make-instance 'meta-object))))
+
+;;; CLASS MAP
+(defvar +class-map+
+  (create-class-map
+   '_has-required '_has-operation-id '_has-callbacks '_has-allow-reserved '_has-explode
+   '_has-style '_has-$ref '_has-example '_has-schema '_has-url '_has-summary '_has-in
+   '_has-description '_has-name
+
+   'oauth-flow-object 'oauth-flows-object 'security-scheme-object
+   'xml-object 'discriminator-object 'tag-object
+
+   'link-object '_has-links
+
+   'example-object '_has-examples
+
+   'response-object 'responses-object 'encoding-object
+
+   'media-type-object '_has-content
+
+   'request-body-object
+
+   'header-object 'parameter-object '_has-headers '_has-parameters
+
+   'external-documentation-object '_has-external-docs
+
+   'operation-object 'path-item-object 'components-object 'server-variable-object
+
+   'server-object '_has-servers
+
+   'license-object 'contact-object 'info-object 'openapi-object 'property-object 'meta-object 'swagger-object))

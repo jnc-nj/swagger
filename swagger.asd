@@ -8,7 +8,7 @@
   :components ((:file "src/packages")
 	       (:file "src/classes")
 	       (:file "src/process"))
-  :depends-on (:jack-tools
-	       :sanity-clause
+  :depends-on (:jack-tools 
 	       :jonathan
+	       :cl-json
 	       :alexandria))

@@ -1,7 +1,8 @@
 (in-package #:cl-user)
 
 (defpackage #:swagger.classes
-  (:use #:cl)
+  (:use #:cl
+	#:jack.tools.objects) 
   (:export #:_HAS-REQUIRED
 	   #:_HAS-OPERATION-ID
 	   #:_HAS-CALLBACKS
@@ -16,8 +17,8 @@
 	   #:_HAS-IN
 	   #:_HAS-DESCRIPTION
 	   #:_HAS-NAME
+	   #:_HAS-TYPE
 
-	   #:SECURITY-REQUIREMENT-OBJECT
 	   #:OAUTH-FLOW-OBJECT
 	   #:OAUTH-FLOWS-OBJECT
 	   #:SECURITY-SCHEME-OBJECT
@@ -40,6 +41,7 @@
 
 	   #:REQUEST-BODY-OBJECT
 
+	   #:HEADER-OBJECT
 	   #:PARAMETER-OBJECT
 	   #:_HAS-HEADERS
 	   #:_HAS-PARAMETERS
@@ -48,8 +50,7 @@
 	   #:_HAS-EXTERNAL-DOCS
 
 	   #:OPERATION-OBJECT
-	   #:PATH-ITEM-OBJECT
-	   #:PATHS-OBJECT
+	   #:PATH-ITEM-OBJECT 
 	   #:COMPONENTS-OBJECT
 	   #:SERVER-VARIABLE-OBJECT
 
@@ -62,11 +63,96 @@
 	   #:OPENAPI-OBJECT
 	   #:PROPERTY-OBJECT
 	   #:META-OBJECT
-	   #:SWAGGER-OBJECT)
-  (:shadowing-import-from #:sanity-clause))
+	   #:SWAGGER-OBJECT
+
+	   #:SWAGGER-JSON
+	   #:META
+	   #:PROPERTIES
+	   #:OPENAPI
+	   #:INFO
+	   #:PATHS
+	   #:COMPONENTS
+	   #:TITLE
+	   #:TERMS-OF-SERVICE
+	   #:VERSION
+	   #:CONTACT
+	   #:LICENSE
+	   #:EMAIL
+	   #:VARIABLES
+	   #:ENUM
+	   #:INITFORM
+	   #:SCHEMAS
+	   #:REQUEST-BODIES
+	   #:SECURITY-SCHEMES
+	   #:GET
+	   #:PUT
+	   #:POST
+	   #:DELETE
+	   #:OPTIONS
+	   #:HEAD
+	   #:PATCH
+	   #:TRACE
+	   #:SERVERS
+	   #:TAGS
+	   #:RESPONSES
+	   #:SECURITY
+	   #:DEPRECATED
+	   #:ALLOW-EMPTY-VALUE
+	   #:ENCODING
+	   #:CONTENT-TYPE
+	   #:DEFAULT
+	   #:CONTENT
+	   #:HEADERS
+	   #:EXAMPLES
+	   #:VALUE
+	   #:EXTERNAL-VALUE
+	   #:LINKS
+	   #:PARAMETERS
+	   #:OPERATION-REF
+	   #:REQUEST-BODY
+	   #:SERVER
+	   #:EXTERNAL-DOCS
+	   #:PROPERTY-NAME
+	   #:MAPPING
+	   #:NAMESPACE
+	   #:PREFIX
+	   #:ATTRIBUTE
+	   #:WRAPPED
+	   #:TYPE
+	   #:SCHEME
+	   #:BEARER-FORMAT
+	   #:FLOWS
+	   #:OPEN-ID-CONNECT-URL
+	   #:IMPLICIT
+	   #:PASSWORD
+	   #:CLIENT-CREDENTIALS
+	   #:AUTHORIZATION-CODE
+	   #:AUTHORIZATION-URL
+	   #:TOKEN-URL
+	   #:REFRESH-URL
+	   #:SCOPES
+	   #:NAME
+	   #:DESCRIPTION
+	   #:IN
+	   #:SUMMARY
+	   #:URL
+	   #:SCHEMA
+	   #:EXAMPLE
+	   #:$REF
+	   #:STYLE
+	   #:EXPLODE
+	   #:ALLOW-RESERVED
+	   #:CALLBACKS
+	   #:OPERATION-ID
+	   #:REQUIRED
+	   
+	   #:+CLASS-MAP+))
 
 (defpackage #:swagger.process
   (:use #:cl
-	#:alexandria 
+	#:cl-json
+	#:jack.tools.filesystems
+	#:jack.tools.objects
 	#:swagger.classes)
-  (:export #:PARSE))
+  (:export #:PROCESS))
+

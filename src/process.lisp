@@ -1,6 +1,6 @@
 (in-package #:swagger.process)
 
-(defun parse (path) 
-  (let ((data (read-file-into-string (pathname path))))
-    (sanity-clause:load (find-class 'swagger-object)
-			(jonathan:parse data :as :alist))))
+(defun process (path)
+  (let* ((content (open-file (pathname path)))
+	 (decode (jonathan:parse content :as :alist)))
+    (cast decode +class-map+)))
