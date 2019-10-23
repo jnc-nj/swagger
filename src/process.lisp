@@ -1,5 +1,11 @@
 (in-package #:swagger.process)
 
+(defun swagger-p (processed)
+  (with-slots (swagger_json meta) processed
+    (and (eq +class-openapi-object+ (class-of swagger_json))
+	 (eq +class-meta-object+ (class-of meta))
+	 (with-slots (paths info) swagger_json (and paths info)))))
+
 (defun process (path &key ignore-path malform-path)
   (cond ((cl-fad:directory-exists-p path) 
 	 (let ((file-count (length (cl-fad:list-directory path)))
@@ -14,15 +20,10 @@
 		(unless (member (namestring item) ignored :test #'string=)
 		  (let ((processed (process item)))
 		    (log:info "[~d/~d][processing ~d]" counter file-count item)
-		    (if processed
-			(with-slots (swagger_json meta) processed
-			  (cond ((and (eq +class-openapi-object+ (class-of swagger_json))
-				      (eq +class-meta-object+ (class-of meta))
-				      (with-slots (paths info) swagger_json (and paths info)))
-				 (when ignore-path (add-line (namestring item) ignore-path))
-				 (push processed collect)) 
-				(t (when malform-path (add-line (namestring item) malform-path)))))
-			(when malform-path (add-line (namestring item) malform-path))))))
+		    (cond ((and processed (swagger-p processed))
+			   (when ignore-path (add-line (namestring item) ignore-path))
+			   (push processed collect)) 
+			  (malform-path (add-line (namestring item) malform-path))))))
 	    :if-does-not-exist :ignore
 	    :test #'(lambda (item) (string= (get-extension item) ".json")))
 	   collect))
@@ -47,6 +48,7 @@
       (dolist (api (agethash :apis http-body*))
 	(let* ((url (agethash :url (car (agethash :properties api))))
 	       (json (dex:get url))
-	       (decode (jonathan:parse json :as :alist)))
-	  (push (cast decode +class-map+) collect)))
+	       (decode (jonathan:parse json :as :alist))
+	       (cast (cast decode +class-map+)))
+	  (push cast collect)))
       collect)))
