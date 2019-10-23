@@ -1,10 +1,13 @@
 (in-package #:swagger.process)
 
 (defun swagger-p (processed)
-  (with-slots (swagger_json meta) processed
-    (and (eq +class-openapi-object+ (class-of swagger_json))
-	 (eq +class-meta-object+ (class-of meta))
-	 (with-slots (paths info) swagger_json (and paths info)))))
+  (or (and (eq +class-swagger-object+ (class-of processed))
+	   (with-slots (swagger_json meta) processed
+	     (and (eq +class-openapi-object+ (class-of swagger_json))
+		  (eq +class-meta-object+ (class-of meta))
+		  (swagger-p swagger_json))))
+      (and (eq +class-openapi-object+ (class-of processed))
+	   (with-slots (paths info) processed (and paths info)))))
 
 (defun process (path &key ignore-path malform-path)
   (cond ((cl-fad:directory-exists-p path) 

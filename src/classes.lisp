@@ -201,6 +201,7 @@
    (meta :initarg :meta :initform (make-instance 'meta-object))))
 
 ;;; CLASS MAP
+(defvar +class-swagger-object+ (class-of (make-instance 'swagger-object)))
 (defvar +class-openapi-object+ (class-of (make-instance 'openapi-object)))
 (defvar +class-meta-object+ (class-of (make-instance 'meta-object)))
 (defvar +class-map+
