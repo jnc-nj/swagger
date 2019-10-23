@@ -155,6 +155,7 @@
   (:use #:cl
 	#:cl-json
 	#:cl-ppcre
+	#:jack.tools.withs
 	#:jack.tools.lists
 	#:jack.tools.filesystems
 	#:jack.tools.objects
