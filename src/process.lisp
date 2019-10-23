@@ -50,5 +50,5 @@
 	       (json (dex:get url))
 	       (decode (jonathan:parse json :as :alist))
 	       (cast (cast decode +class-map+)))
-	  (push cast collect)))
+	  (when (swagger-p cast) (push cast collect))))
       collect)))
