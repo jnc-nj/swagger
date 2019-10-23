@@ -160,5 +160,6 @@
 	#:jack.tools.filesystems
 	#:jack.tools.objects
 	#:swagger.classes)
-  (:export #:PROCESS))
+  (:export #:PROCESS
+	   #:SEARCH-SWAGGERHUB))
 
