@@ -161,7 +161,8 @@
 	#:jack.tools.filesystems
 	#:jack.tools.objects
 	#:swagger.classes)
-  (:export #:SWAGGER-P
-	   #:PROCESS 
+  (:export #:SWAGGER-NORMALIZE
+	   #:SWAGGER-P
+	   #:SWAGGER-PROCESS 
 	   #:SEARCH-SWAGGERHUB))
 

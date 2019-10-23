@@ -206,29 +206,29 @@
 (defvar +class-meta-object+ (class-of (make-instance 'meta-object)))
 (defvar +class-map+
   (create-class-map
-   '_has-required '_has-operation-id '_has-callbacks '_has-allow-reserved '_has-explode
-   '_has-style '_has-$ref '_has-example '_has-schema '_has-url '_has-summary '_has-in
-   '_has-description '_has-name
+   ;;'_has-required '_has-operation-id '_has-callbacks '_has-allow-reserved '_has-explode
+   ;;'_has-style '_has-$ref '_has-example '_has-schema '_has-url '_has-summary '_has-in
+   ;;'_has-description '_has-name
 
    'oauth-flow-object 'oauth-flows-object 'security-scheme-object
    'xml-object 'discriminator-object 'tag-object
 
-   'link-object '_has-links
+   'link-object ;;'_has-links
 
-   'example-object '_has-examples
+   'example-object ;;'_has-examples
 
    'response-object 'responses-object 'encoding-object
 
-   'media-type-object '_has-content
+   'media-type-object ;;'_has-content
 
    'request-body-object
 
    'header-object 'parameter-object '_has-headers '_has-parameters
 
-   'external-documentation-object '_has-external-docs
+   'external-documentation-object ;;'_has-external-docs
 
    'operation-object 'path-item-object 'components-object 'server-variable-object
 
-   'server-object '_has-servers
+   'server-object ;;'_has-servers
 
    'license-object 'contact-object 'info-object 'openapi-object 'property-object 'meta-object 'swagger-object))
