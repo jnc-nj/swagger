@@ -1,42 +1,38 @@
 (in-package #:swagger.process)
 
+(defun general-convert (items)
+  (when (listp items)
+    (loop for item in items
+       collect (cons (car item) (cast (cdr item) +class-map+)))))
+
+(defun operation-convert (operation-object)
+  (when operation-object
+    (with-slots (responses) operation-object
+      (when (and responses (listp responses))
+	(setf responses (general-convert responses))))))
+
+(defmethod openapi-convert (openapi-object)
+  (when openapi-object
+    (with-slots (paths) openapi-object
+      (when (and paths (listp paths))
+	(setf paths (general-convert paths))
+	(dolist (path paths)
+	  (with-slots (get put post delete options head patch trace) (cdr path)
+	    (operation-convert get)
+	    (operation-convert put)
+	    (operation-convert post)
+	    (operation-convert delete)
+	    (operation-convert options)
+	    (operation-convert head)
+	    (operation-convert patch)
+	    (operation-convert trace)))))))
+
 (defun swagger-normalize (processed)
-  (labels ((convert (items)
-	     (when (listp items)
-	       (loop for item in items
-		  collect (cons (car item) (cast (cdr item) +class-map+))))))
-    (cond ((eq +class-swagger-object+ (class-of processed))
-	   (with-slots (swagger_json) processed
-	     (swagger-normalize swagger_json)))
-	  ((eq +class-openapi-object+ (class-of processed))
-	   (with-slots (paths) processed
-	     (setf paths (convert paths))
-	     (dolist (path paths)
-	       (with-slots (get put post delete options head patch trace) (cdr path)
-		 (when get
-		   (with-slots (responses) get
-		     (setf responses (convert responses))))
-		 (when put
-		   (with-slots (responses) put
-		     (setf responses (convert responses))))
-		 (when post
-		   (with-slots (responses) post
-		     (setf responses (convert responses))))
-		 (when delete
-		   (with-slots (responses) delete
-		     (setf responses (convert responses))))
-		 (when options
-		   (with-slots (responses) options
-		     (setf responses (convert responses))))
-		 (when head
-		   (with-slots (responses) head
-		     (setf responses (convert responses))))
-		 (when patch
-		   (with-slots (responses) patch
-		     (setf responses (convert responses))))
-		 (when trace
-		   (with-slots (responses) trace
-		     (setf responses (convert responses)))))))))) 
+  (cond ((eq +class-swagger-object+ (class-of processed))
+	 (with-slots (swagger_json) processed
+	   (swagger-normalize swagger_json)))
+	((eq +class-openapi-object+ (class-of processed))
+	 (openapi-convert processed))) 
   processed)
 
 (defun swagger-p (processed)
