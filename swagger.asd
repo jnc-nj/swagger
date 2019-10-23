@@ -11,4 +11,7 @@
   :depends-on (:jack-tools 
 	       :jonathan
 	       :cl-json
+	       :cl-fad
+	       :cl-ppcre
+	       :log4cl
 	       :alexandria))

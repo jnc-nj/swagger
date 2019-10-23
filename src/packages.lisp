@@ -65,9 +65,10 @@
 	   #:META-OBJECT
 	   #:SWAGGER-OBJECT
 
-	   #:SWAGGER-JSON
+	   #:SWAGGER_JSON
 	   #:META
 	   #:PROPERTIES
+	   #:SWAGGER
 	   #:OPENAPI
 	   #:INFO
 	   #:PATHS
@@ -145,12 +146,16 @@
 	   #:CALLBACKS
 	   #:OPERATION-ID
 	   #:REQUIRED
-	   
+
+	   #:+CLASS-OPENAPI-OBJECT+
+	   #:+CLASS-META-OBJECT+
 	   #:+CLASS-MAP+))
 
 (defpackage #:swagger.process
   (:use #:cl
 	#:cl-json
+	#:cl-ppcre
+	#:jack.tools.lists
 	#:jack.tools.filesystems
 	#:jack.tools.objects
 	#:swagger.classes)

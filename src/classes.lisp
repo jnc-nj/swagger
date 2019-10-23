@@ -181,7 +181,8 @@
    (license :initarg :license :initform (make-instance 'license-object))))
 
 (defclass openapi-object (_has-servers _has-external-docs)
-  ((openapi :initarg :openapi :initform "")
+  ((swagger :initarg :swagger :initform "")
+   (openapi :initarg :openapi :initform "")
    (info :initarg :info :initform (make-instance 'info-object))
    (paths :initarg :paths :initform '(()))
    (components :initarg :components :initform (make-instance 'components-object))
@@ -196,10 +197,12 @@
    (tags :initarg :tags :initform (list ""))))
 
 (defclass swagger-object ()
-  ((swagger-json :initarg :swagger-json :initform (make-instance 'openapi-object))
+  ((swagger_json :initarg :swagger_json :initform (make-instance 'openapi-object))
    (meta :initarg :meta :initform (make-instance 'meta-object))))
 
 ;;; CLASS MAP
+(defvar +class-openapi-object+ (class-of (make-instance 'openapi-object)))
+(defvar +class-meta-object+ (class-of (make-instance 'meta-object)))
 (defvar +class-map+
   (create-class-map
    '_has-required '_has-operation-id '_has-callbacks '_has-allow-reserved '_has-explode
